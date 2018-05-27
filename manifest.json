@@ -1,0 +1,10 @@
+{
+  "short_name": "wwx's blog",
+  "name": "wwx's blog",
+  "icons": [
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#6595b8"
+}
