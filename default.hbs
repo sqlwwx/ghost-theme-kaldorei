@@ -44,11 +44,11 @@
             <i class="fa fa-chevron-up"></i>
         </button>
     </div>
-    
+
     <script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
     <script>
     NProgress.start();
-    var serviceWorkerUri = '/sw.js';
+    var serviceWorkerUri = '/assets/js/sw.js';
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register(serviceWorkerUri).then(function() {
         if (navigator.serviceWorker.controller) {
