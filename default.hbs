@@ -48,7 +48,7 @@
     <script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
     <script>
     NProgress.start();
-    var serviceWorkerUri = '/assets/js/sw.js';
+    var serviceWorkerUri = '/sw.js';
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register(serviceWorkerUri).then(function() {
         if (navigator.serviceWorker.controller) {
