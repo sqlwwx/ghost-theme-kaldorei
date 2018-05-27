@@ -13,11 +13,12 @@
     <link rel="shortcut icon" href="{{asset "favicon.ico"}}">{{! Styles'n'Scripts }}
     <link rel="stylesheet" type="text/css" href="{{asset "css/screen.css"}}" />
     <!-- <link rel="stylesheet" type="text/css" href="//fonts.useso.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" /> -->
-    <link rel="stylesheet" type="text/css" href="{{asset "plugins/font-awesome-4.5.0/css/font-awesome.min.css"}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset "plugins/bootstrap-3.3.5/css/bootstrap.min.css"}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset "plugins/highlight-9.1.0/styles/monokai-sublime.css"}}" />
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset "plugins/anijs-0.9.3/anicollection.min.css"}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset "plugins/fancybox-3.1.25/jquery.fancybox.min.css"}}" />{{! Ghost outputs important style and meta data with this tag }}
+    {{! Ghost outputs important style and meta data with this tag }}
     {{ghost_head}}
 </head>
 
@@ -44,22 +45,22 @@
     </div>
 
     {{!-- jQuery needs to come before `{{ghost_foot}}` so that jQuery can be used in code injection --}}
-    <script type="text/javascript" src="{{asset "js/jquery-1.12.0.min.js"}}"></script>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     {{! Ghost outputs important scripts and data with this tag }}
     {{ghost_foot}}
 
-    <script type="text/javascript" src="{{asset "js/jquery.fitvids.js"}}"></script>
+    <script src="https://cdn.bootcss.com/fitvids/1.2.0/jquery.fitvids.min.js"></script>
     {{! The main JavaScript file for Kaldorei }}
     <script type="text/javascript" src="{{asset "js/index.js"}}"></script>
-    <script type="text/javascript" src="{{asset "plugins/bootstrap-3.3.5/js/bootstrap.min.js"}}"></script>
-    <script type="text/javascript" src="{{asset "plugins/highlight-9.1.0/highlight.pack.js"}}"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
     <script type="text/javascript" src="{{asset "plugins/jquery-toc-0.3.5/jquery.toc.js"}}"></script>
-    <script type="text/javascript" src="{{asset "plugins/velocity-1.2.3/velocity.min.js"}}"></script>
-    <script type="text/javascript" src="{{asset "plugins/velocity-1.2.3/velocity.ui.min.js"}}"></script>
-    <script type="text/javascript" src="{{asset "plugins/anijs-0.9.3/anijs-min.js"}}"></script>
-    <script type="text/javascript" src="{{asset "plugins/anijs-0.9.3/anijs-helper-scrollreveal-min.js"}}"></script>
-    <script type="text/javascript" src="{{asset "plugins/github-repo-jquery-widget/jquery.githubRepoWidget.min.js"}}"></script>
-    <script type="text/javascript" src="{{asset "plugins/fancybox-3.1.25/jquery.fancybox.min.js"}}"></script>
+    <script src="https://cdn.bootcss.com/velocity/2.0.2/velocity.min.js"></script>
+    <script src="https://cdn.bootcss.com/velocity/2.0.2/velocity.ui.min.js"></script>
+    <script src="https://cdn.bootcss.com/AniJS/0.9.3/anijs-min.js"></script>
+    <script src="https://cdn.bootcss.com/AniJS/0.9.3/helpers/scrollreveal/anijs-helper-scrollreveal-min.js"></script>
+    <script src="https://cdn.bootcss.com/github-repo-widget/e23d85ab8f/jquery.githubRepoWidget.min.js"></script>
+    <script src="https://cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.js"></script>
 </body>
 
 </html>
