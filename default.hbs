@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="shortcut icon" href="{{asset "favicon.ico"}}">{{! Styles'n'Scripts }}
+    <link href="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset "css/screen.css"}}" />
     <!-- <link rel="stylesheet" type="text/css" href="//fonts.useso.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" /> -->
     <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -43,6 +44,26 @@
             <i class="fa fa-chevron-up"></i>
         </button>
     </div>
+    
+    <script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+    <script>
+    NProgress.start();
+    var serviceWorkerUri = '/sw.js';
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register(serviceWorkerUri).then(function() {
+        if (navigator.serviceWorker.controller) {
+          NProgress.done();
+          console.log('Assets cached by the controlling service worker.');
+        } else {
+          console.log('Please reload this page to allow the service worker to handle network operations.');
+        }
+      }).catch(function(error) {
+        console.log('ERROR: ' + error);
+      });
+    } else {
+      console.log('Service workers are not supported in the current browser.');
+    }
+    </script>
 
     {{!-- jQuery needs to come before `{{ghost_foot}}` so that jQuery can be used in code injection --}}
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
