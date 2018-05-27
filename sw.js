@@ -6,7 +6,7 @@
     * Service Worker Toolbox caching
     */
 
-    var cacheVersion = '-toolbox-v1';
+    var cacheVersion = '-toolbox-v6';
     var dynamicVendorCacheName = 'dynamic-vendor' + cacheVersion;
     var staticVendorCacheName = 'static-vendor' + cacheVersion;
     var staticAssetsCacheName = 'static-assets' + cacheVersion;
