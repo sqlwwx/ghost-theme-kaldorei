@@ -71,14 +71,16 @@
   NProgress.start();
   var serviceWorkerUri = '/sw.js';
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register(serviceWorkerUri).then(function() {
-      if (navigator.serviceWorker.controller) {
-        NProgress.done();
-      } else {
-        console.log('Please reload this page to allow the service worker to handle network operations.');
-      }
-    }).catch(function(error) {
-      console.log('ERROR: ' + error);
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register(serviceWorkerUri).then(function() {
+        if (navigator.serviceWorker.controller) {
+          NProgress.done();
+        } else {
+          console.log('Please reload this page to allow the service worker to handle network operations.');
+        }
+      }).catch(function(error) {
+        console.log('ERROR: ' + error);
+      });
     });
   } else {
     console.log('Service workers are not supported in the current browser.');
