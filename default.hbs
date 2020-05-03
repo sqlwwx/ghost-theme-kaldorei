@@ -73,11 +73,10 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
       navigator.serviceWorker.register(serviceWorkerUri).then(function() {
-        if (navigator.serviceWorker.controller) {
-          NProgress.done();
-        } else {
+        if (!navigator.serviceWorker.controller) {
           console.log('Please reload this page to allow the service worker to handle network operations.');
         }
+        NProgress.done();
       }).catch(function(error) {
         console.log('ERROR: ' + error);
       });
@@ -95,7 +94,7 @@
   {{ghost_foot}}
 
   {{!-- Content API --}}
-  <script src="https://unpkg.com/@tryghost/content-api@1.0.0/umd/content-api.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tryghost/content-api@1.4.1/umd/content-api.min.js" defer></script>
   <script src="https://lib.baomitu.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js"></script>
   {{!-- <script type="text/javascript" src="{{asset "plugins/prism-latest/prism.js"}}"></script> --}}
@@ -106,7 +105,7 @@
   <script src="https://lib.baomitu.com/AniJS/0.9.3/helpers/scrollreveal/anijs-helper-scrollreveal-min.js"></script>
   <script src="https://lib.baomitu.com/github-repo-widget/e23d85ab8f/jquery.githubRepoWidget.min.js"></script>
   <script src="https://lib.baomitu.com/fancybox/3.3.5/jquery.fancybox.min.js"></script>
-  <script type="text/javascript" src="{{asset "plugins/ghost-search-1.0.0/ghost-search.min.js"}}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ghost-search@1.0.1/dist/ghost-search.min.js"></script>
 
   {{! The main JavaScript file for Kaldorei }}
   <script type="text/javascript" src="{{asset "js/index.js"}}"></script>

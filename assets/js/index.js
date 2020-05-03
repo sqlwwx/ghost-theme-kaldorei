@@ -185,6 +185,9 @@
         });
     };
   var isOnPc=!(/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent));
+  if (!window.music163Id) {
+    return
+  }
   if (!isOnPc) {
     $(".site-wrapper").append('<iframe id="music-if" frameborder="no" border="0" marginwidth="0" marginheight="0" width='+200+' height=52 src="https://music.163.com/outchain/player?type=2&id=103035&auto=0&height=32"></iframe>');
     $("#music-if").css("margin-top", "0px")

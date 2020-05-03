@@ -1,80 +1,147 @@
-(function () {
-  self.importScripts('https://cdn.weidiango.com/workbox-cdn/releases/5.1.3/workbox-sw.js');
+(() => {
+  const cdnUrl = 'https://cdn.jsdelivr.net'
+  self.importScripts(`${cdnUrl}/npm/workbox-cdn/workbox/workbox-sw.js`)
   if (!self.workbox) {
     console.log(`Boo! Workbox didn't load 😬`);
     return
   }
   console.log(`Yay! Workbox is loaded 🎉`);
   workbox.setConfig({
-    debug: true,
-    modulePathPrefix: 'https://cdn.weidiango.com/workbox-cdn/releases/5.1.3/'
+    // debug: true,
+    modulePathPrefix: `${cdnUrl}/npm/workbox-cdn/workbox/`
   });
-  var cacheVersion = '-workbox-v1';
-  var dynamicVendorCacheName = 'dynamic-vendor' + cacheVersion;
-  var staticVendorCacheName = 'static-vendor' + cacheVersion;
-  var staticAssetsCacheName = 'static-assets' + cacheVersion;
-  var contentCacheName = 'content' + cacheVersion;
-  var maxEntries = 50;
-  self.workbox.routing.registerRoute(
-    /ghost.wuweixing.com\/(.+)\.(?:png|gif|jpg|jpeg|svg)$/,
-    new self.workbox.strategies.CacheFirst()
+  workbox.precaching.precacheAndRoute([{
+    url: '/', revision: '1'
+  }, {
+    url: '/archives-post/', revision: '1'
+  }], {
+    ignoreURLParametersMatching: [/.*/]
+  });
+  workbox.core.clientsClaim();
+  workbox.core.skipWaiting();
+  workbox.precaching.cleanupOutdatedCaches();
+  const {
+    routing: { registerRoute },
+    strategies: {
+      NetworkOnly, CacheOnly,
+      NetworkFirst,
+      CacheFirst,
+      StaleWhileRevalidate
+    },
+    cacheableResponse: {
+      CacheableResponsePlugin
+    },
+    expiration: {
+      ExpirationPlugin
+    }
+  } = workbox;
+  registerRoute(
+    new RegExp('baidu.com/.*(hm.gif|hm.js|s.gif)'),
+    new NetworkOnly({})
   );
-  workbox.routing.registerRoute(
-      // Cache CSS & JS files
-    /.*\.(css|js)/,
-    new workbox.strategies.StaleWhileRevalidate({
-      cacheName: 'static-assets-cache',
+  registerRoute(
+    new RegExp('.+(cdn.jsdelivr.net|lib.baomitu.com).+'),
+    new CacheFirst({
+      cacheName: 'cdn',
+      plugins: [
+        new CacheableResponsePlugin({
+          statuses: [0, 200]
+        })
+      ]
+    }),
+  );
+  registerRoute(
+    new RegExp('/assets/'),
+    new CacheFirst({
+      cacheName: 'main-assets',
+      plugins: [
+        new ExpirationPlugin({
+          maxEntries: 50,
+          maxAgeSeconds: 7 * 24 * 60 * 60,
+        })
+      ]
+  }))
+  registerRoute(
+    /\.(?:png|jpg|jpeg|svg|gif|ico)$/,
+    new CacheFirst({
+      cacheName: 'img-v1',
+      plugins: [
+        new ExpirationPlugin({
+          maxEntries: 20,
+          maxAgeSeconds: 7 * 24 * 60 * 60,
+        })
+      ]
     })
   );
-//   self.toolbox.router.get('/(.*)', self.toolbox.fastest, {
-//     origin: /lib\.baomitu\.com/,
-//     cache: {
-//       name: staticAssetsCacheName,
-//       maxEntries: 999999
-//     }
-//   });
-// 
-//   self.toolbox.router.get('/(.*)', self.toolbox.cacheFirst, {
-//     origin: /ghost-static\.lab\.wuweixing\.com/,
-//     cache: {
-//       name: staticAssetsCacheName,
-//       maxEntries: 999999
-//     }
-//   });
-// 
-// 
-//   // 缓存本站静态文件
-//   self.toolbox.router.get('/assets/(.*)', self.toolbox.cacheFirst, {
-//     cache: {
-//       name: staticAssetsCacheName,
-//       maxEntries: maxEntries
-//     }
-//   });
-// 
-//   self.toolbox.router.get('/public/ghost-sdk.min.js', self.toolbox.cacheFirst, {
-//     cache: {
-//       name: staticAssetsCacheName,
-//       maxEntries: maxEntries
-//     }
-//   });
-// 
-//   self.toolbox.router.get('/(.*)', self.toolbox.cacheFirst, {
-//     origin: /casper\.ghost\.org/,
-//     cache: {
-//       name: staticAssetsCacheName,
-//       maxEntries: 999999
-//     }
-//   });
-// 
-//   // 缓存 googleapis
-//   self.toolbox.router.get('/css', self.toolbox.fastest, {
-//     origin: /fonts\.googleapis\.com/,
-//     cache: {
-//       name: dynamicVendorCacheName,
-//       maxEntries: 999999
-//     }
-//   });
-// 
+  registerRoute(
+    new RegExp('.+casper.ghost.com.*'),
+    new CacheFirst({
+      cacheName: 'casper-v1',
+      plugins: [
+        new CacheableResponsePlugin({
+          statuses: [0, 200]
+        })
+      ]
+    })
+  );
+  registerRoute(
+    new RegExp('.+(disquscdn.com|referrer.disqus.com|disqus.com/embed.js).*'),
+    new CacheFirst({
+      cacheName: 'disquscdn',
+      plugins: [
+        new CacheableResponsePlugin({
+          statuses: [0, 200]
+        })
+      ]
+    })
+  );
+  registerRoute(
+    new RegExp('.+(disqus.com/api|disqus.com/next/config.js|/images/pixel.gif).*'),
+    new NetworkOnly({})
+  );
+  registerRoute(
+    new RegExp('((fonts.(?:googleapis|gstatic).com|www.google-analytics.com|ssl.google-analytics.com))'),
+    new CacheFirst({
+      cacheName: 'googleapis',
+      plugins: [
+        new CacheableResponsePlugin({
+          statuses: [0, 200]
+        }),
+        new ExpirationPlugin({
+          maxEntries: 30,
+          maxAgeSeconds: 60 * 60 * 24 * 365,
+          purgeOnQuotaError: true
+        }),
+      ],
+    }),
+  );
+  registerRoute(
+    ({ url, event }) => {
+      return Boolean(
+        url.hostname === 'ghost.wuweixing.com'
+        && event.request.headers.get('accept').includes('text/html')
+      )
+    },
+    new NetworkFirst({
+      cacheName: 'page',
+        plugins: [
+          new CacheableResponsePlugin({
+            statuses: [0, 200]
+          }),
+          new ExpirationPlugin({
+            maxEntries: 20,
+            maxAgeSeconds: 60 * 60 * 24 * 5,
+          })
+      ]
+    })
+  );
+  registerRoute(
+    new RegExp('.+ghost.wuweixing.com.+(js|css).*'),
+    new StaleWhileRevalidate({
+      cacheName: 'common-assets-v1',
+    })
+  );
+
 //   // 不缓存 DISQUS 评论
 //   self.toolbox.router.get("/(.*)", self.toolbox.cacheFirst, {
 //     origin: /disquscdn\.com/,
@@ -103,50 +170,78 @@
 //       maxEntries: maxEntries
 //     }
 //   });
-// 
-//   // 缓存所有 Google 字体
-//   self.toolbox.router.get('/(.*)', self.toolbox.cacheFirst, {
-//       origin: /(fonts\.gstatic\.com|www\.google-analytics\.com|ssl\.google-analytics\.com)/,
-//       cache: {
-//         name: staticVendorCacheName,
-//         maxEntries: maxEntries
-//       }
-//   });
-// 
+  registerRoute(
+    new RegExp('((fonts.(?:googleapis|gstatic).com|www.google-analytics.com|ssl.google-analytics.com))'),
+    new CacheFirst({
+      cacheName: 'googleapis',
+      plugins: [
+        new CacheableResponsePlugin({
+          statuses: [0, 200]
+        }),
+        new ExpirationPlugin({
+          maxEntries: 30,
+          maxAgeSeconds: 60 * 60 * 24 * 365,
+          purgeOnQuotaError: true
+        }),
+      ],
+    }),
+  );
 //   self.toolbox.router.get('/content/(.*)', self.toolbox.fastest, {
 //     cache: {
 //       name: contentCacheName,
 //       maxEntries: maxEntries
 //     }
 //   });
-// 
-//   self.toolbox.router.get('/*', function (request, values, options) {
-//     if (!request.url.match(/(\/ghost\/|\/page\/)/) && request.headers.get('accept').includes('text/html')) {
-//       return self.toolbox.fastest(request, values, options);
-//     } else {
-//       return self.toolbox.networkOnly(request, values, options);
-//     }
-//     }, {
-//     cache: {
-//       name: contentCacheName,
-//       maxEntries: maxEntries
-//     }
-//   });
-// 
-  // immediately activate this serviceworker
-  self.addEventListener('install', function (event) {
-    return event.waitUntil(self.skipWaiting());
-  });
-
-  self.addEventListener('activate', function (event) {
-    return event.waitUntil(self.clients.claim());
-  });
-  workbox.routing.setDefaultHandler(
-    new workbox.strategies.NetworkFirst({
-      options: [{
-        // 超过 3s 请求没有响应则 fallback 到 cache
-        networkTimeoutSeconds: 3,
-      }]
+  registerRoute(
+    ({ url, event }) => {
+      return Boolean(
+        url.hostname === 'ghost.wuweixing.com'
+        && event.request.headers.get('accept').includes('text/html')
+      )
+    },
+    new NetworkFirst({
+      cacheName: 'page',
+        plugins: [
+          new CacheableResponsePlugin({
+            statuses: [0, 200]
+          }),
+          new ExpirationPlugin({
+            maxEntries: 20,
+            maxAgeSeconds: 60 * 60 * 24 * 5,
+          })
+      ]
     })
   );
+  registerRoute(
+    new RegExp('.+ghost.wuweixing.com.+(js|css).*'),
+    new StaleWhileRevalidate({
+      cacheName: 'common-assets-v1',
+    })
+  );
+
+  const defaultStrategy = new NetworkFirst({
+    cacheName: 'default',
+    options: [{
+      networkTimeoutSeconds: 2,
+    }],
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200]
+      }),
+      new ExpirationPlugin({
+        maxEntries: 30,
+        maxAgeSeconds: 60 * 60 * 24 * 7,
+        purgeOnQuotaError: true
+      }),
+    ]
+  })
+  workbox.routing.setDefaultHandler((args) => {
+    if (
+      args.url.hostname.includes('baidu.com')
+      || args.request.method !== 'GET'
+    ) {
+      return fetch(args.request)
+    }
+    return defaultStrategy.handle(args)
+  })
 })();
